@@ -6,7 +6,7 @@
 }
 
 html {
-  font-size: clamp(1rem, 0.75rem + 1.5vw, 2rem);
+  font-size: clamp(0.75rem, 0.5rem + 1.5vw, 1.5rem);
 }
 
 h1, h2, h3, h4, h5, figure, p, ol, ul {
@@ -29,3 +29,70 @@ img {
 }
 
 /* END TEMPLATE */
+
+:root.dark {
+  --color-bg: #333132;
+  --color-fg: #c8cfc1;
+  --color-hl1: #55819f;
+  --color-hl2: #8297a6;
+  --color-alt1: #9f7355;
+  --color-alt2: #a69182;
+}
+
+:root.light {
+  --color-bg: #c8cfc1;
+  --color-fg: #333132;
+  --color-hl1: #8297a6;
+  --color-hl2: #55819f;
+  --color-alt1: #a69182;
+  --color-alt2: #9f7355;
+}
+
+#page {
+  display: grid;
+  grid-template-areas: "header, header", "sideA, main", "sideB, main", "footer, footer";
+  grid-template-rows: .5fr 3fr 3fr .3fr;
+  grid-template-columns: 20vw 80vw;
+  color: var(--color-fg);
+  background-color: var(--color-bg);
+}
+
+#sideA {
+  grid-area: sideA;
+}
+
+#sideB {
+  grid-area: sideB;
+}
+
+#header {
+  grid-area: header;
+  background-color: var(--color-hl1);
+}
+
+#main {
+  grid-area: main;
+  display: grid;
+}
+
+#main div{
+  background-color: var(--color-hl1);
+}
+
+#footer {
+  grid-area: footer;
+}
+
+#footer a {
+  color: var(--color-alt);
+  background-color: var(--color-hl1);
+}
+
+#footer a:hover {
+  color: var(--color-alt);
+  font-weight: 600;
+}
+
+#footer a:visited {
+  color: var(--color-alt);
+}
