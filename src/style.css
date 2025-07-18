@@ -1,4 +1,4 @@
-@import url('modern-normalize.css');
+@import url("modern-normalize.css");
 
 :root {
   line-height: 1.5;
@@ -50,42 +50,79 @@ img {
 
 #page {
   display: grid;
-  grid-template-areas: "header, header", "sideA, main", "sideB, main", "footer, footer";
-  grid-template-rows: .5fr 3fr 3fr .3fr;
+  grid-template-areas: 
+    "header header" 
+    "sideA display" 
+    "sideB display" 
+    "footer footer";
+  grid-template-rows: .5fr 2fr calc(100vh-2.65fr) .15fr;
   grid-template-columns: 20vw 80vw;
   color: var(--color-fg);
   background-color: var(--color-bg);
+  border: 1px bold var(--color-alt1);
+}
+
+#page>div {
+  padding: 10px;
 }
 
 #sideA {
   grid-area: sideA;
+  display: flex;
+  flex-direction: column;
 }
 
 #sideB {
   grid-area: sideB;
+  display: flex;
+  flex-direction: column;
+}
+
+#sideA button, #sideB button {
+  border-radius: 15px;
+  background-color: var(--color-hl1);
 }
 
 #header {
   grid-area: header;
   background-color: var(--color-hl1);
+  display: flex;
+  justify-content: center;
+  gap: 50px;
 }
 
-#main {
-  grid-area: main;
+#header h2 {
+  justify-self: center;
+}
+
+#header button {
+  margin-right: 5vw;
+  font-size: .7rem;
+  border-radius: 25px;
+  box-shadow: 5, 5, 5, var(--color-alt1);
+  border: 2px var(--color-bg) solid;
+  justify-self: end;
+}
+
+#display {
+  grid-area: display;
   display: grid;
+  border-left: 2px dashed var(--color-fg);
 }
 
-#main div{
+#display div{
   background-color: var(--color-hl1);
 }
 
 #footer {
   grid-area: footer;
+  text-align: end;
+  background-color: var(--color-hl1);
 }
 
 #footer a {
   color: var(--color-alt);
-  background-color: var(--color-hl1);
+  
 }
 
 #footer a:hover {
@@ -95,4 +132,8 @@ img {
 
 #footer a:visited {
   color: var(--color-alt);
+}
+
+#addTask-display {
+  display: none;
 }
