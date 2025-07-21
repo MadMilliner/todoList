@@ -87,6 +87,10 @@ img {
   padding: 5px;
 }
 
+#addCategory {
+  margin-bottom: 2rem;
+}
+
 #header {
   grid-area: header;
   background-color: var(--color-hl1);
@@ -126,7 +130,9 @@ img {
 #display>div{
   background-color: var(--color-hl1);
   width: fit-content;
+  height: fit-content;
   border: var(--color-alt2) ridge 2px;
+  padding: 5px;
 }
 
 #footer {
@@ -152,4 +158,6 @@ img {
 
 #addTaskDisplay {
   display: none;
+  position: static;
+  top: 50;
 }

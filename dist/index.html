@@ -12,21 +12,22 @@
             <div id="sideA">
                 <button id="addTodo">+ New Task</button>
                 <button id="addCategory">+ New Category</button>
-                
-            </div>
-            <div id="sideB">
-                
                 <button id="allTasks">All Tasks</button>
                 <button id="today">Today's Tasks</button>
                 <button id="upcoming">Future Tasks</button>
                 <button id="noDueDate">No Due Date</button>
+                
+            </div>
+            <div id="sideB">
+                
+                
                 <div id="insertTags"></div>
             </div>
             <div id="header">
                 <h2>The Taskmaster 9000</h2>
                 <button class="theme-toggle">Dark/Light</button>
             </div>
-            <div id="display">Insert Tasks Here</div>
+            <div id="display"></div>
             <div id="footer"><a href="https://madmilliner.github.io/jasonPeterson/" target="_blank">made by jasonPeterson</a></div>
         </div>
         
@@ -36,7 +37,7 @@
           <form id="addTask-form">
             <fieldset>
                 <label for="title">Title</label>
-                <input type="text" name="title" id="taskTitle" class="text" required>
+                <input type="text" name="title" id="taskTitle" class="text" autofocus required>
                 <label for="description">Description</label>
                 <input type="text" name="description" id="taskDescription" value="" class="text" required>
                 <label for="dateDue">Date Due</label>

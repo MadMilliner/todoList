@@ -62,6 +62,13 @@ createTag("Work");
 createTag("Play");
 
 const pageMain = {
+  deleteTodo: function(id) {
+    const thisItem = todos.find((thisItem) => thisItem.id === String(id));
+    let index = todos.indexOf(thisItem)
+    todos.splice(index, 1);
+    document.getElementById("display").innerHTML = "";
+    pageMain.mainDisplay();
+},
   mainDisplay: function() {
     todos.forEach((todo) => {
       display = document.getElementById("display");
@@ -73,24 +80,47 @@ const pageMain = {
         <p>Due Date: ${todo.dueDate}</p>
         <p>Priority: ${todo.priority}</p>
         <p>Categories: ${todo.categories}</p>
-        <p><input type="checkbox" class="complete" id="${todo.id}">`;
+        <p><input type="checkbox" class="complete" id="${todo.id}">
+        <button  class="delete-btn" data-id="${todo.id}">Delete</button>`;
       display.appendChild(todoCard);
     });
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const id = e.target.getAttribute('data-id');
+      this.deleteTodo(id);
+    });
+  });
+},
+  init: function() {
+    this.deleteTodo;
+    this.mainDisplay
   },
-  // return {mainDisplay}
 };
 
-pageMain.mainDisplay();
 
 const userInteract = {
   markComplete: function() {
     var checkbox = `${this.complete}`;
     this.complete = !this.complete;
   },
+  addTaskPopUp: function() {
+    document.getElementById("addTaskDisplay").style.display = "block";
+    document.getElementById("addThatTask").addEventListener("click", userInteract.addTask);
+    document.getElementById("closeAddTaskDisplay").addEventListener("click", function() {
+      document.getElementById("addTaskDisplay").style.display = "none";
+    });
+    document.getElementById("taskDateDue").addEventListener("change", function() {
+      var input = this.value;
+      var dateEntered = new Date(input);
+      console.log(input); //e.g. 2015-11-13
+      console.log(dateEntered); //e.g. Fri Nov 13 2015 00:00:00 GMT+0000 (GMT Standard Time)
+      return dateEntered
+    });
+},
   addTask: function() {
     let title = document.getElementById("taskTitle").value;
     let description = document.getElementById("taskDescription").value;
-    let dueDate = document.getElementById("taskDateDue");
+    let dueDate = dateEntered;
     new createTodo(title, description, dueDate);
     pageMain.mainDisplay();
     document.getElementById("addTask-form").reset();
@@ -99,23 +129,18 @@ const userInteract = {
   addCategory: function(tag) {
     createTag(tag);
   },
-  addTaskPopUp: function() {
-    document.getElementById("addTaskDisplay").style.display = "block";
-    document.getElementById("addThatTask").addEventListener("click", userInteract.addTask);
-    document.getElementById("closeAddTaskDisplay").addEventListener("click", function() {
-    document.getElementById("addTaskDisplay").style.display = "none";
-  })
-},
+  
+
   init: function() {
     this.markComplete;
+    this.addTaskPopUp;
     this.addTask;
     this.addCategory;
-    this.addTaskPopUp;
     this.addTaskcancelButton;
   },
 };
 
-userInteract.init();
+
 
 const pageElements = {
   // addTaskButton: document.addEventListener("click", userInteract.addTask),
@@ -136,7 +161,10 @@ const pageElements = {
   }
 };
 
+pageMain.mainDisplay();
+userInteract.init();
 pageElements.init();
+
 
 
 
