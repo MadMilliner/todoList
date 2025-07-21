@@ -29,37 +29,24 @@ class createTodo {
 }
 
 window.createTodo = createTodo;
-// const createTodo = (title, description, dueDate) => {
-//   const todo = {
-//     title: title,
-//     description: description,
-//     dueDate: dueDate,
-//     priority: "medium",
-//     categories: [],
-//     complete: false,
-//     id: crypto.randomUUID(),
-//   };
-//   todos.push(todo);
-//   return todo;
-// };
 
 let testTodo = new createTodo("Eat lunch", "Eat some lunch", "2025-07-17");
-console.log(testTodo);
+// console.log(testTodo);
 console.log(todos);
 
 let tags = [];
 window.tags = tags;
 
-function createTag(title) {
-  let tag = [];
-  tag.title = title;
-  tags.push(tag);
-  return tag;
+class createTag{ 
+  constructor(title) {
+  this.title = title;
+  tags.push(this);
 };
+}
 
-createTag("Home");
-createTag("Work");
-createTag("Play");
+new createTag("Home");
+new createTag("Work");
+new createTag("Play");
 
 const pageMain = {
   deleteTodo: function(id) {
@@ -69,31 +56,56 @@ const pageMain = {
     document.getElementById("display").innerHTML = "";
     pageMain.mainDisplay();
 },
+  priorityDropdown: document.querySelectorAll(".priority").forEach(el => {
+  el.addEventListener("click", () => {
+    document.getElementById("priorityDropdown").classList.toggle("show");
+  });
+}),
   mainDisplay: function() {
     todos.forEach((todo) => {
-      display = document.getElementById("display");
-      var todoCard = document.createElement("div");
-      todoCard.setAttribute("id", `${todo.id}`);
-      todoCard.innerHTML = `
-        <p>Task: <span class="todoTitle">${todo.title}</span></p>
-        <p>Description: ${todo.description}</p>
-        <p>Due Date: ${todo.dueDate}</p>
-        <p>Priority: ${todo.priority}</p>
-        <p>Categories: ${todo.categories}</p>
-        <p><input type="checkbox" class="complete" id="${todo.id}">
-        <button  class="delete-btn" data-id="${todo.id}">Delete</button>`;
-      display.appendChild(todoCard);
-    });
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const id = e.target.getAttribute('data-id');
-      this.deleteTodo(id);
-    });
+  const display = document.getElementById("display");
+  const todoCard = document.createElement("div");
+  todoCard.setAttribute("id", `${todo.id}`);
+  todoCard.innerHTML = `
+    <p>Task: <span class="todoTitle">${todo.title}</span></p>
+    <p>Description: ${todo.description}</p>
+    <p>Due Date: ${todo.dueDate}</p>
+    <p class="priority">Priority: ${todo.priority}</p>
+    <p>Categories: ${todo.categories}</p>
+    <p>
+      <input type="checkbox" class="complete" id="check-${todo.id}" ${todo.complete ? 'checked' : ''}>
+      <button class="delete-btn" data-id="${todo.id}">Delete</button>
+    </p>
+  `;
+  display.appendChild(todoCard);
+  const checkbox = document.getElementById(`check-${todo.id}`);
+  checkbox.addEventListener("change", () => {
+    todo.complete = checkbox.checked;
+    console.log(`"${todo.title}" is now ${todo.complete ? 'complete' : 'incomplete'}`);
+    // Optional: visual feedback
+    todoCard.classList.toggle("task-completed", todo.complete);
   });
+});
+
+},
+categorySidebar: function() {
+  const tagSpace = document.getElementById("insertTags");
+  tags.forEach((tag) => {
+    if (tag.title === "") {}
+    else {
+    const categoryButton = document.createElement("button");
+    categoryButton.setAttribute("id", `${tag.title}`);
+    categoryButton.setAttribute("class", "category");
+    categoryButton.innerHTML = `${tag.title}`;
+    tagSpace.appendChild(categoryButton);
+    console.log(categoryButton);
+    }
+  })
 },
   init: function() {
     this.deleteTodo;
-    this.mainDisplay
+    this.mainDisplay();
+    this.categorySidebar();
   },
 };
 
@@ -104,6 +116,7 @@ const userInteract = {
     this.complete = !this.complete;
   },
   addTaskPopUp: function() {
+    document.getElementById("addTask-form").reset();
     document.getElementById("addTaskDisplay").style.display = "block";
     document.getElementById("addThatTask").addEventListener("click", userInteract.addTask);
     document.getElementById("closeAddTaskDisplay").addEventListener("click", function() {
@@ -116,18 +129,23 @@ const userInteract = {
       console.log(dateEntered); //e.g. Fri Nov 13 2015 00:00:00 GMT+0000 (GMT Standard Time)
       return dateEntered
     });
+    document.getElementById("taskTitle").focus();
 },
   addTask: function() {
     let title = document.getElementById("taskTitle").value;
     let description = document.getElementById("taskDescription").value;
-    let dueDate = dateEntered;
-    new createTodo(title, description, dueDate);
+    // let dueDate = dateEntered;
+    new createTodo(title, description);
     pageMain.mainDisplay();
     document.getElementById("addTask-form").reset();
     document.getElementById("addTaskDisplay").style.display = "none";
   },
   addCategory: function(tag) {
-    createTag(tag);
+    if (!tags.some(t => t.title === tag)) {
+      new createTag(tag);
+    };
+    document.getElementById("insertTags").innerHTML="";
+    pageMain.categorySidebar();
   },
   
 
@@ -136,24 +154,26 @@ const userInteract = {
     this.addTaskPopUp;
     this.addTask;
     this.addCategory;
-    this.addTaskcancelButton;
   },
 };
 
 
 
 const pageElements = {
-  // addTaskButton: document.addEventListener("click", userInteract.addTask),
-  addCategoryButton: document.addEventListener("click", userInteract.addCategory),
-  eventListenerAddTask: document.getElementById("addTodo").addEventListener("click", userInteract.addTaskPopUp),
-  eventListenerAddCategory: document.getElementById("addCategory").addEventListener("click", function() {
-    const tag = prompt("What is the category name");
-  if (tag) { // Check if user didn't cancel
+  addCategoryButton: document.getElementById("addCategory").addEventListener("click", function() {
+  const tag = prompt("What is the category name").trim();
+  if (tag) { 
     userInteract.addCategory(tag);
   }
 }),
+  eventListenerAddTask: document.getElementById("addTodo").addEventListener("click", userInteract.addTaskPopUp),
+//   eventListenerAddCategory: document.getElementById("addCategory").addEventListener("click", function() {
+//     const tag = prompt("What is the category name").trim();
+//   if (tag) { 
+//     userInteract.addCategory(tag);
+//   }
+// }),
   init: function() {
-    // this.addTaskButton;
     this.addCategoryButton;
     this.addTaskPopUp;
     this.eventListenerAddTask;
@@ -161,7 +181,7 @@ const pageElements = {
   }
 };
 
-pageMain.mainDisplay();
+pageMain.init();
 userInteract.init();
 pageElements.init();
 
