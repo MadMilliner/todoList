@@ -1,16 +1,23 @@
 import "./style.css";
+import {storageAvailable, populateStorage, getStorage, setStyles} from "./localStorage.js"
 // import {setTheme, toggleThemeButton} from "./theme.js";
-document.documentElement.className = "dark";
+if (!localStorage.getItem("style")) {
+  document.documentElement.className = "dark";
+  populateStorage();
+} else {
+  setStyles();
+}
+
 function setTheme() {
   const root = document.documentElement;
   const newTheme = root.className === 'dark' ? 'light' : 'dark';
   root.className = newTheme;
+  
 };
 document.querySelector('.theme-toggle').addEventListener('click', setTheme);
 
 
 const todos = [];
-window.todos = todos; 
 
 class createTodo {
   constructor(title, description, dueDate, priority, category) {
@@ -39,7 +46,9 @@ let testTodo3 = new createTodo("Code", "Time to learn", "2025-07-17", "high", "P
 console.log(todos);
 
 let tags = [];
+window.todos = todos; 
 window.tags = tags;
+getStorage();
 
 class createTag{ 
   constructor(title) {
@@ -184,6 +193,7 @@ const userInteract = {
     pageMain.mainDisplay();
     document.getElementById("addTask-form").reset();
     document.getElementById("addTaskDisplay").style.display = "none";
+    populateStorage();
   },
   addCategory: function(tag) {
     if (!tags.some(t => t.title === tag)) {
@@ -191,6 +201,7 @@ const userInteract = {
     };
     document.getElementById("insertTags").innerHTML="";
     pageMain.categorySidebar();
+    populateStorage();
   },
   
 
@@ -233,7 +244,11 @@ userInteract.init();
 pageElements.init();
 
 
-
+window.onbeforeunload = closingCode;
+function closingCode(){
+   populateStorage();
+   return null;
+}
 
 
 

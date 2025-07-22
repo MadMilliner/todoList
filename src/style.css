@@ -110,6 +110,8 @@ img {
 }
 
 #header button {
+  background: var(--color-fg);
+  color: var(--color-bg);
   margin-right: 5vw;
   font-size: .7rem;
   border-radius: 25px;
@@ -122,7 +124,7 @@ img {
 }
 
 #header button:hover {
-  background-color: var(--color-alt1);
+  background: linear-gradient(190deg, var(--color-fg), var(--color-bg));
 }
 
 #display {
