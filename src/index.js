@@ -16,7 +16,9 @@ class createTodo {
   constructor(title, description, dueDate, priority, category) {
     this.title = title;
     this.description = description;
-    this.dueDate = dueDate;
+    const dateObj = new Date(dueDate);
+    this.dueDate = dateObj 
+    this.dueDateFormatted = dateObj.toLocaleDateString()
     this.priority = priority;
     this.category = category;
     this.complete = false;
@@ -43,6 +45,7 @@ class createTag{
   constructor(title) {
   this.title = title;
   tags.push(this);
+  tags.sort((a, b) => a.title - b.title)
 };
 }
 
@@ -65,6 +68,7 @@ const pageMain = {
 // }),
   mainDisplay: function() {
     document.getElementById("display").innerHTML = "";
+    todos.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
     todos.forEach((todo) => {
       const display = document.getElementById("display");
       const todoCard = document.createElement("div");
@@ -72,7 +76,7 @@ const pageMain = {
       todoCard.innerHTML = `
         <p>Task: <span class="todoTitle">${todo.title}</span></p>
         <p>Description: ${todo.description}</p>
-        <p>Due Date: ${todo.dueDate}</p>
+        <p>Due Date: ${todo.dueDateFormatted}</p>
         <p class="priority">Priority: ${todo.priority}</p>
         <p>Category: ${todo.category}</p>
         <p>
@@ -101,7 +105,7 @@ categoryFilter: function(e) {
       todoCard.innerHTML = `
         <p>Task: <span class="todoTitle">${todo.title}</span></p>
         <p>Description: ${todo.description}</p>
-        <p>Due Date: ${todo.dueDate}</p>
+        <p>Due Date: ${todo.dueDateFormatted}</p>
         <p class="priority">Priority: ${todo.priority}</p>
         <p>Category: ${todo.category}</p>
         <p>

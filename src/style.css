@@ -146,10 +146,12 @@ img {
 }
 
 .todoTitle {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .delete-btn {
+  background-color: #1f1f1f00;
+  border: none;
   background-image: url('../trash-svgrepo-com.svg');
   background-size: cover;
   background-position: center;
