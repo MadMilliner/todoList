@@ -12,13 +12,9 @@
             <div id="sideA">
                 <button id="addTodo">+ New Task</button>
                 <button id="addCategory">+ New Category</button>
-                <button id="allTasks">All Tasks</button>                
-            </div>
-            <div id="sideB">
-                
-                
+                <button id="allTasks">All Tasks</button>
                 <p>Categories</p>
-                <div id="insertTags"></div>
+                <div id="insertTags"></div>                
             </div>
             <div id="header">
                 <h2>The Taskmaster 9000</h2>
@@ -33,12 +29,31 @@
           <p class="validateTips">All form fields are required.</p>
           <form id="addTask-form">
             <fieldset>
-                <label for="title">Title</label>
-                <input type="text" name="title" id="taskTitle" class="text" autofocus required>
-                <label for="description">Description</label>
-                <input type="text" name="description" id="taskDescription" value="" class="text" required>
-                <label for="dateDue">Date Due</label>
-                <input type="date" name="dateDue" id="taskDateDue" value="" class="date" required>
+                <p>
+                    <label for="title">Title</label>
+                    <input type="text" name="title" id="taskTitle" class="text" autofocus required>
+                </p>
+                <p>
+                    <label for="description">Description</label>
+                    <input type="text" name="description" id="taskDescription" value="" class="text" required>
+                </p>
+                <p>
+                    <label for="dateDue">Date Due</label>
+                    <input type="text" name="dateDue" id="taskDateDue" value="##/##/####" required>
+                </p>
+                <p>
+                    <label for="taskPriority">Priority</label>
+                    <select name="priority" id="taskPriority">
+                        <option value="high">high</option>
+                        <option value="medium" autofocus="true">medium</option>
+                        <option value="low">low</option>
+                    </select>
+                </p>
+                <p>
+                    <label for="taskCategory">Category</label>
+                    <select name="category" id="taskCategory">
+                    </select>
+                </p>
                 <button id="addThatTask">Submit</button>
                 <button id="closeAddTaskDisplay">Cancel</button>
             </fieldset>
