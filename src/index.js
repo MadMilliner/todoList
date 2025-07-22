@@ -58,64 +58,64 @@ const pageMain = {
     document.getElementById("display").innerHTML = "";
     pageMain.mainDisplay();
 },
-  priorityDropdown: document.querySelectorAll(".priority").forEach(el => {
-  el.addEventListener("click", () => {
-    document.getElementById("priorityDropdown").classList.toggle("show");
-  });
-}),
+//   priorityDropdown: document.querySelectorAll(".priority").forEach(el => {
+//   el.addEventListener("click", () => {
+//     document.getElementById("priorityDropdown").classList.toggle("show");
+//   });
+// }),
   mainDisplay: function() {
     document.getElementById("display").innerHTML = "";
     todos.forEach((todo) => {
-  const display = document.getElementById("display");
-  const todoCard = document.createElement("div");
-  todoCard.setAttribute("id", `${todo.id}`);
-  todoCard.innerHTML = `
-    <p>Task: <span class="todoTitle">${todo.title}</span></p>
-    <p>Description: ${todo.description}</p>
-    <p>Due Date: ${todo.dueDate}</p>
-    <p class="priority">Priority: <span contentEditable="true">${todo.priority}</span></p>
-    <p>Category: ${todo.category}</p>
-    <p>
-      <input type="checkbox" class="complete" id="check-${todo.id}" ${todo.complete ? 'checked' : ''}>
-      <button class="delete-btn" data-id="${todo.id}">Delete</button>
-    </p>
-  `;
-  display.appendChild(todoCard);
-  const checkbox = document.getElementById(`check-${todo.id}`);
-  checkbox.addEventListener("change", () => {
-    todo.complete = checkbox.checked;
-    console.log(`"${todo.title}" is now ${todo.complete ? 'complete' : 'incomplete'}`);
-    // Optional: visual feedback
-    todoCard.classList.toggle("task-completed", todo.complete);
+      const display = document.getElementById("display");
+      const todoCard = document.createElement("div");
+      todoCard.setAttribute("id", `${todo.id}`);
+      todoCard.innerHTML = `
+        <p>Task: <span class="todoTitle">${todo.title}</span></p>
+        <p>Description: ${todo.description}</p>
+        <p>Due Date: ${todo.dueDate}</p>
+        <p class="priority">Priority: ${todo.priority}</p>
+        <p>Category: ${todo.category}</p>
+        <p>
+          <input type="checkbox" class="complete" id="check-${todo.id}" ${todo.complete ? 'checked' : ''}>
+          <button class="delete-btn" id="delete-btn-${todo.id}"></button>
+        </p>
+      `;
+      display.appendChild(todoCard);
+      document.getElementById(`delete-btn-${todo.id}`).addEventListener("click", () => {pageMain.deleteTodo(todo.id)});
+      const checkbox = document.getElementById(`check-${todo.id}`);
+      checkbox.addEventListener("change", () => {
+        todo.complete = checkbox.checked;
+        console.log(`"${todo.title}" is now ${todo.complete ? 'complete' : 'incomplete'}`);
+        todoCard.classList.toggle("task-completed", todo.complete);
   });
 });
 },
 categoryFilter: function(e) {
   document.getElementById("display").innerHTML = "";
   todos.filter(obj => {
-    return obj.category === e.target.id 
-}).forEach((todo) => {
-  const display = document.getElementById("display");
-  const todoCard = document.createElement("div");
-  todoCard.setAttribute("id", `${todo.id}`);
-  todoCard.innerHTML = `
-    <p>Task: <span class="todoTitle">${todo.title}</span></p>
-    <p>Description: ${todo.description}</p>
-    <p>Due Date: ${todo.dueDate}</p>
-    <p class="priority">Priority: <span contentEditable="true">${todo.priority}</span></p>
-    <p>Category: ${todo.category}</p>
-    <p>
-      <input type="checkbox" class="complete" id="check-${todo.id}" ${todo.complete ? 'checked' : ''}>
-      <button class="delete-btn" data-id="${todo.id}">Delete</button>
-    </p>
-  `;
-  display.appendChild(todoCard);
-  const checkbox = document.getElementById(`check-${todo.id}`);
-  checkbox.addEventListener("change", () => {
-    todo.complete = checkbox.checked;
-    console.log(`"${todo.title}" is now ${todo.complete ? 'complete' : 'incomplete'}`);
-    // Optional: visual feedback
-    todoCard.classList.toggle("task-completed", todo.complete);
+        return obj.category === e.target.id 
+    }).forEach((todo) => {
+      const display = document.getElementById("display");
+      const todoCard = document.createElement("div");
+      todoCard.setAttribute("id", `${todo.id}`);
+      todoCard.innerHTML = `
+        <p>Task: <span class="todoTitle">${todo.title}</span></p>
+        <p>Description: ${todo.description}</p>
+        <p>Due Date: ${todo.dueDate}</p>
+        <p class="priority">Priority: ${todo.priority}</p>
+        <p>Category: ${todo.category}</p>
+        <p>
+          <input type="checkbox" class="complete" id="check-${todo.id}" ${todo.complete ? 'checked' : ''}>
+          <button class="delete-btn" id="delete-btn-${todo.id}"></button>
+        </p>
+      `;
+      display.appendChild(todoCard);
+      document.getElementById(`delete-btn-${todo.id}`).addEventListener("click", () => {pageMain.deleteTodo(todo.id)});
+      const checkbox = document.getElementById(`check-${todo.id}`);
+      checkbox.addEventListener("change", () => {
+        todo.complete = checkbox.checked;
+        console.log(`"${todo.title}" is now ${todo.complete ? 'complete' : 'incomplete'}`);
+        todoCard.classList.toggle("task-completed", todo.complete);
   });
 });
 },

@@ -145,6 +145,23 @@ img {
   margin: 2px;
 }
 
+.todoTitle {
+  font-weight: 500;
+}
+
+.delete-btn {
+  background-image: url('../trash-svgrepo-com.svg');
+  background-size: cover;
+  background-position: center;
+  height: 40px;
+  width: 40px;
+  margin-left: 60%;
+  cursor: pointer;
+  position: relative;
+  bottom: 0px;
+  right: -10%;
+}
+
 .task-completed {
   opacity: 0.6;
   text-decoration: line-through;

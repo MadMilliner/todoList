@@ -26,7 +26,7 @@
         
         
         <div id="addTaskDisplay" title="Create new task">
-          <p class="validateTips">All form fields are required.</p>
+          <p class="validateTips">Please enter your task.</p>
           <form id="addTask-form">
             <fieldset>
                 <p>
@@ -44,9 +44,9 @@
                 <p>
                     <label for="taskPriority">Priority</label>
                     <select name="priority" id="taskPriority">
-                        <option value="high">high</option>
-                        <option value="medium" autofocus="true">medium</option>
                         <option value="low">low</option>
+                        <option value="medium" selected>medium</option>
+                        <option value="high">high</option>
                     </select>
                 </p>
                 <p>
@@ -59,12 +59,6 @@
             </fieldset>
         </form>
        </div> 
-       <div class="priorityDiv">
-        <div id="priorityDropdown" class="dropdown-content">
-            high
-            medium
-            low
-        </div>
 </div>
     </body>
 </html>
