@@ -87,6 +87,10 @@ img {
   padding: 5px;
 }
 
+.subheading {
+  font-size: .5rem;
+}
+
 #addCategory {
   margin-bottom: 2rem;
 }
@@ -118,7 +122,7 @@ img {
   box-shadow: 5, 5, 5, var(--color-alt1);
   border: 2px var(--color-bg) solid;
   align-self: center;
-  height: fit-content;
+  height: calc(fit-content + 1rem);
   cursor: pointer;
   margin-left: 20vw;
 }
@@ -151,17 +155,43 @@ img {
   font-weight: 600;
 }
 
+.complete {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  margin: 0;
+  margin-left: 2px;
+  font: inherit;
+  color: currentColor;
+  width: .8rem;
+  height: .8rem;
+  border: 2px ridge var(--color-alt1);
+  border-radius: .1rem;
+}
+
 .delete-btn {
   background-color: #1f1f1f00;
   border: none;
   background-image: url('../trash-svgrepo-com.svg');
   background-size: cover;
   background-position: center;
+  cursor: pointer;
+}
+
+#sideA .delete-btn {
+  position: relative;
+  height: 25px;
+  width: 25px;
+  bottom: 0px;
+  right: -30%;
+  border: none;
+}
+
+#display .delete-btn {
+  position: relative;
   height: 40px;
   width: 40px;
-  margin-left: 60%;
-  cursor: pointer;
-  position: relative;
+  margin-left: 50%;
   bottom: 0px;
   right: -10%;
 }

@@ -17,32 +17,50 @@ function storageAvailable(type) {
   }
 }
 
-if (storageAvailable("localStorage")) {
-  // Yippee! We can use localStorage awesomeness
-} else {
-  // Too bad, no localStorage for us
-}
+
 
 function populateStorage() {
-  localStorage.setItem("todos", JSON.stringify(window.todos));
-  localStorage.setItem("tags", JSON.stringify(window.tags));
-  localStorage.setItem("style", document.documentElement.className.value);
+  if (todos && todos.length > 0) {
+    localStorage.setItem("storedTodos", JSON.stringify(window.todos));
+  } else {
+    localStorage.setItem("storedTodos", JSON.stringify([])); // Save empty array, not undefined
+  }
 
-  setStyles();
+  if (tags && tags.length > 0) {
+    localStorage.setItem("storedTodos", JSON.stringify(window.tags));
+  } else {
+    localStorage.setItem("storedTodos", JSON.stringify([])); // Save empty array, not undefined
+  }
+
+  localStorage.setItem("style", document.documentElement.className);
+
 }
 
-function getStorage() {
-    if (localStorage.getItem("todos")) {
-  const savedTodos = JSON.parse(localStorage.getItem("todos"));
-  const savedTags = JSON.parse(localStorage.getItem("tags"));
-  
-  window.todos = savedTodos;
-  window.tags = savedTags;
-    } else {}
+
+function getTodos() {
+  try {
+    const stored = localStorage.getItem("storedTodos");
+    window.todos = stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error("Error loading todos:", error);
+    window.todos = []; // Fallback to empty array
+  }
+  console.log("Loaded todos:", window.todos);
+}
+
+function getTags() {
+  try {
+    const stored = localStorage.getItem("storedTags");
+    window.tags = stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error("Error loading tags:", error);
+    window.tags = []; // Fallback to empty array
+  }
+  console.log("Loaded tags:", window.tags);
 }
 
 function setStyles() {
-    if (!localStorage.getItem("style")) {
+    if (localStorage.getItem("style")) {
         const style = localStorage.getItem("style");
         document.documentElement.className = style;
     } else document.documentElement.className = "dark";
@@ -51,4 +69,4 @@ function setStyles() {
 
 
 
-export {storageAvailable, populateStorage, getStorage, setStyles}
+export {storageAvailable, populateStorage, getTodos, getTags, setStyles}

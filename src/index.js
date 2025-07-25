@@ -1,12 +1,17 @@
 import "./style.css";
-import {storageAvailable, populateStorage, getStorage, setStyles} from "./localStorage.js"
-// import {setTheme, toggleThemeButton} from "./theme.js";
-if (!localStorage.getItem("style")) {
+// import {storageAvailable, populateStorage, getTodos, getTags, setStyles} from "./localStorage.js"
+
+// if (!localStorage.getItem("style")) {
   document.documentElement.className = "dark";
-  populateStorage();
-} else {
-  setStyles();
-}
+//   populateStorage();
+// } else {
+//   setStyles();
+// }
+// if (storageAvailable("localStorage")) {
+//   document.getElementById("footer").innerHTML+=`<p><h6>Local Storage Enabled</h6></p>`
+// } else {
+//   document.getElementById("footer").innerHTML+=`<p><h6>Local Storage Not Avaialable</h6></p>`
+// }
 
 function setTheme() {
   const root = document.documentElement;
@@ -34,29 +39,32 @@ class createTodo {
   }
   addTodos() {
     todos.push(this);
+    todos.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
   }
 }
 
 window.createTodo = createTodo;
 
-let testTodo1 = new createTodo("Eat lunch", "Eat some lunch", "2025-07-17", "medium", "Home");
-let testTodo2 = new createTodo("Eat lunch", "Eat packed lunch", "2025-07-16", "medium", "Work");
-let testTodo3 = new createTodo("Code", "Time to learn", "2025-07-17", "high", "Play");
+
 // console.log(testTodo);
 console.log(todos);
 
-let tags = [];
+const tags = [];
 window.todos = todos; 
 window.tags = tags;
-getStorage();
+// if (!localStorage.getItem("storedTodos") || !localStorage.getItem("storedTags")) {populateStorage();}
+// else {getTodos(); getTags();}
 
 class createTag{ 
   constructor(title) {
   this.title = title;
-  tags.push(this);
-  tags.sort((a, b) => a.title - b.title)
+  this.addTags();
+  }
+  addTags() {
+    tags.push(this);
+    tags.sort((a, b) => a.title - b.title)}
 };
-}
+
 
 new createTag("Home");
 new createTag("Work");
@@ -70,38 +78,63 @@ const pageMain = {
     document.getElementById("display").innerHTML = "";
     pageMain.mainDisplay();
 },
+deleteTag: function(title) {
+    const thisItem = tags.find((thisItem) => thisItem.title === String(title));
+    let index = tags.indexOf(thisItem)
+    tags.splice(index, 1);
+    // document.getElementById("display").innerHTML = "";
+    console.log("🔥 About to call categorySidebar");
+  pageMain.categorySidebar();
+  console.log("🔥 categorySidebar done");
+  
+  console.log("🔥 About to call mainDisplay");
+  pageMain.mainDisplay();
+  console.log("🔥 mainDisplay done");
+  
+  console.log("🔥 deleteTag function complete");
+    setTimeout(() => {
+  console.log("Display after 1 second:", document.getElementById("display").innerHTML);
+}, 1000);
+},
 //   priorityDropdown: document.querySelectorAll(".priority").forEach(el => {
 //   el.addEventListener("click", () => {
 //     document.getElementById("priorityDropdown").classList.toggle("show");
 //   });
 // }),
   mainDisplay: function() {
-    document.getElementById("display").innerHTML = "";
-    todos.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
-    todos.forEach((todo) => {
-      const display = document.getElementById("display");
-      const todoCard = document.createElement("div");
-      todoCard.setAttribute("id", `${todo.id}`);
-      todoCard.innerHTML = `
-        <p>Task: <span class="todoTitle">${todo.title}</span></p>
-        <p>Description: ${todo.description}</p>
-        <p>Due Date: ${todo.dueDateFormatted}</p>
-        <p class="priority">Priority: ${todo.priority}</p>
-        <p>Category: ${todo.category}</p>
-        <p>
-          <input type="checkbox" class="complete" id="check-${todo.id}" ${todo.complete ? 'checked' : ''}>
-          <button class="delete-btn" id="delete-btn-${todo.id}"></button>
-        </p>
-      `;
-      display.appendChild(todoCard);
-      document.getElementById(`delete-btn-${todo.id}`).addEventListener("click", () => {pageMain.deleteTodo(todo.id)});
-      const checkbox = document.getElementById(`check-${todo.id}`);
-      checkbox.addEventListener("change", () => {
-        todo.complete = checkbox.checked;
-        console.log(`"${todo.title}" is now ${todo.complete ? 'complete' : 'incomplete'}`);
-        todoCard.classList.toggle("task-completed", todo.complete);
+  console.log("mainDisplay called, todos:", todos);
+  console.log("Available tags:", tags.map(tag => tag.title));
+  
+  document.getElementById("display").innerHTML = "";
+  
+  todos.forEach((todo, index) => {
+    const display = document.getElementById("display");
+    const todoCard = document.createElement("div");
+    todoCard.setAttribute("id", `${todo.id}`);
+    todoCard.innerHTML = `
+      <p><span class="todoTitle">${todo.title}</span></p>
+      <p>${todo.description}</p>
+      <p>Due: ${todo.dueDateFormatted}</p>
+      <p class="priority">Priority: ${todo.priority}</p>
+      <p>Category: ${todo.category || 'Uncategorized'}</p>
+      <p>
+        <input type="checkbox" class="complete" id="check-${todo.id}" ${todo.complete ? 'checked' : ''}>
+        <button type="button" class="delete-btn" id="delete-btn-${todo.id}"></button>
+      </p>`;
+    
+    display.appendChild(todoCard);
+    
+    document.getElementById(`delete-btn-${todo.id}`).addEventListener("click", () => {
+      pageMain.deleteTodo(todo.id);
+    });
+    
+    const checkbox = document.getElementById(`check-${todo.id}`);
+    checkbox.addEventListener("change", () => {
+      todo.complete = checkbox.checked;
+      console.log(`"${todo.title}" is now ${todo.complete ? 'complete' : 'incomplete'}`);
+      todoCard.classList.toggle("task-completed", todo.complete);
+    });
   });
-});
 },
 categoryFilter: function(e) {
   document.getElementById("display").innerHTML = "";
@@ -112,14 +145,14 @@ categoryFilter: function(e) {
       const todoCard = document.createElement("div");
       todoCard.setAttribute("id", `${todo.id}`);
       todoCard.innerHTML = `
-        <p>Task: <span class="todoTitle">${todo.title}</span></p>
-        <p>Description: ${todo.description}</p>
-        <p>Due Date: ${todo.dueDateFormatted}</p>
+        <p><span class="todoTitle">${todo.title}</span></p>
+        <p>${todo.description}</p>
+        <p>Due: ${todo.dueDateFormatted}</p>
         <p class="priority">Priority: ${todo.priority}</p>
         <p>Category: ${todo.category}</p>
         <p>
           <input type="checkbox" class="complete" id="check-${todo.id}" ${todo.complete ? 'checked' : ''}>
-          <button class="delete-btn" id="delete-btn-${todo.id}"></button>
+          <button type="button" class="delete-btn" id="delete-btn-${todo.id}"></button>
         </p>
       `;
       display.appendChild(todoCard);
@@ -134,15 +167,21 @@ categoryFilter: function(e) {
 },
 categorySidebar: function() {
   const tagSpace = document.getElementById("insertTags");
+  tagSpace.innerHTML="";
   tags.forEach((tag) => {
     if (tag.title === "") {}
     else {
     const categoryButton = document.createElement("button");
     categoryButton.setAttribute("id", `${tag.title}`);
     categoryButton.setAttribute("class", "category");
-    categoryButton.innerHTML = `${tag.title}`;
+    categoryButton.setAttribute("type", "button");
+    categoryButton.innerHTML = `${tag.title} <button class="delete-btn" id="delete-btn-${tag.title}"></button>`;
     categoryButton.addEventListener("click", pageMain.categoryFilter);
     tagSpace.appendChild(categoryButton);
+    document.getElementById(`delete-btn-${tag.title}`).addEventListener("click", (e) => {
+      e.stopPropagation(); // ✅ Prevent event bubbling
+      pageMain.deleteTodo(tag.title);
+});
     }
   })
 },
@@ -184,25 +223,55 @@ const userInteract = {
     document.getElementById("taskTitle").focus();
 },
   addTask: function() {
+ 
     let title = document.getElementById("taskTitle").value;
     let description = document.getElementById("taskDescription").value;
     let dueDate = document.getElementById("taskDateDue").value;
     let category = document.getElementById("taskCategory").value;
     let priority = document.getElementById("taskPriority").value;
+    if (!title) {
+      alert("Please add some task info.");
+      return;
+    }
     new createTodo(title, description, dueDate, priority, category);
+    console.log(todos);
     pageMain.mainDisplay();
     document.getElementById("addTask-form").reset();
     document.getElementById("addTaskDisplay").style.display = "none";
-    populateStorage();
+    // populateStorage();
   },
   addCategory: function(tag) {
     if (!tags.some(t => t.title === tag)) {
       new createTag(tag);
     };
-    document.getElementById("insertTags").innerHTML="";
+    // document.getElementById("insertTags").innerHTML="";
     pageMain.categorySidebar();
-    populateStorage();
+    // populateStorage();
   },
+  addTaskShortcut: document.addEventListener("keydown", function(e) {
+  if (e.key === "t") {
+    const popup = document.getElementById("addTaskDisplay");
+    if (popup.style.display === "none" || popup.style.display === "") {
+      e.preventDefault();
+      userInteract.addTaskPopUp(); 
+    }
+  }
+}),
+addCategoryPrompt: function() {
+    const tag = prompt("What is the category name");
+    if (tag && tag.trim()) {
+      this.addCategory(tag.trim());
+    }
+  },
+addCategoryShortcut: document.addEventListener("keydown", function(e) {
+  if (e.key === "c") {
+    const popup = document.getElementById("addTaskDisplay");
+    if (popup.style.display === "none" || popup.style.display === "") {
+      e.preventDefault();
+      userInteract.addCategoryPrompt(); 
+    }
+  }
+}),
   
 
   init: function() {
@@ -213,17 +282,14 @@ const userInteract = {
     this.addTaskPopUp;
     this.addTask;
     this.addCategory;
+    this.addTaskShortcut;
+    this.addCategoryShortcut;
   },
 };
 
 
 const pageElements = {
-  addCategoryButton: document.getElementById("addCategory").addEventListener("click", function() {
-  const tag = prompt("What is the category name").trim();
-  if (tag) { 
-    userInteract.addCategory(tag);
-  }
-}),
+  addCategoryButton: document.getElementById("addCategory").addEventListener("click", userInteract.addCategoryPrompt),
   eventListenerAddTask: document.getElementById("addTodo").addEventListener("click", userInteract.addTaskPopUp),
   allTasksButton: document.getElementById("allTasks").addEventListener("click", pageMain.mainDisplay),
   // categoryEventlisteners: function() {
@@ -239,18 +305,34 @@ const pageElements = {
   },
 };
 
+new createTodo("Eat lunch", "Eat some lunch", "2025-07-17", "medium", "Home");
+new createTodo("Get local storage working", "Why is this so hard", "2025-07-23", "high", "Work");
+new createTodo("Code", "Time to learn", "2025-07-17", "high", "Play");
+
 pageMain.init();
 userInteract.init();
 pageElements.init();
+pageMain.mainDisplay();
+// window.todos.onchange = populateStorage;
+// window.tags.onchange = populateStorage;
+
+// window.onbeforeunload = closingCode;
+// function closingCode(){
+//    populateStorage();
+//    return null;
+// }
 
 
-window.onbeforeunload = closingCode;
-function closingCode(){
-   populateStorage();
-   return null;
-}
 
 
-
-
-
+// muatation observer code for debugging
+// const displayElement = document.getElementById("display");
+// const observer = new MutationObserver((mutations) => {
+//   mutations.forEach((mutation) => {
+//     if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
+//       console.log("🚨 Display cleared! Stack trace:");
+//       console.trace();
+//     }
+//   });
+// });
+// observer.observe(displayElement, { childList: true });

@@ -10,8 +10,8 @@
     <body>
         <div id="page">
             <div id="sideA">
-                <button id="addTodo">+ New Task</button>
-                <button id="addCategory">+ New Category</button>
+                <button id="addTodo"><h5>+ New Task</h5><span class="subheading">press t</span> </button>
+                <button id="addCategory"><h5>+ New Category</h5><span class="subheading">press c</span></button>
                 <button id="allTasks">All Tasks</button>
                 <p>Categories</p>
                 <div id="insertTags"></div>                
@@ -30,16 +30,16 @@
           <form id="addTask-form">
             <fieldset>
                 <p>
-                    <label for="title">Title</label>
-                    <input type="text" name="title" id="taskTitle" class="text" autofocus required>
+                    <label for="taskTitle">Title</label>
+                    <input type="text" name="title" id="taskTitle" class="text" autofocus>
                 </p>
                 <p>
-                    <label for="description">Description</label>
-                    <input type="text" name="description" id="taskDescription" value="" class="text" required>
+                    <label for="taskDescription">Description</label>
+                    <input type="text" name="description" id="taskDescription" value="" class="text">
                 </p>
                 <p>
-                    <label for="dateDue">Date Due</label>
-                    <input type="date" name="dateDue" id="taskDateDue" required>
+                    <label for="taskDateDue">Date Due</label>
+                    <input type="date" name="dateDue" id="taskDateDue">
                 </p>
                 <p>
                     <label for="taskPriority">Priority</label>
@@ -54,8 +54,8 @@
                     <select name="category" id="taskCategory">
                     </select>
                 </p>
-                <button id="addThatTask">Submit</button>
-                <button id="closeAddTaskDisplay">Cancel</button>
+                <button type="button" id="addThatTask">Submit</button>
+                <button type="button" id="closeAddTaskDisplay">Cancel</button>
             </fieldset>
         </form>
        </div> 
