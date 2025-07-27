@@ -1,17 +1,19 @@
 import "./style.css";
-// import {storageAvailable, populateStorage, getTodos, getTags, setStyles} from "./localStorage.js"
+import {storageAvailable, populateStorage, getTodos, getTags, setStyles} from "./localStorage.js"
 
-// if (!localStorage.getItem("style")) {
+
+if (!localStorage.getItem("style")) {
   document.documentElement.className = "dark";
-//   populateStorage();
-// } else {
-//   setStyles();
-// }
-// if (storageAvailable("localStorage")) {
-//   document.getElementById("footer").innerHTML+=`<p><h6>Local Storage Enabled</h6></p>`
-// } else {
-//   document.getElementById("footer").innerHTML+=`<p><h6>Local Storage Not Avaialable</h6></p>`
-// }
+  populateStorage();
+} else {
+  setStyles();
+}
+
+if (storageAvailable("localStorage")) {
+  document.getElementById("footer").innerHTML+=`<p><h6>Local Storage Enabled</h6></p>`
+} else {
+  document.getElementById("footer").innerHTML+=`<p><h6>Local Storage Not Avaialable</h6></p>`
+}
 
 function setTheme() {
   const root = document.documentElement;
@@ -45,15 +47,15 @@ class createTodo {
 
 window.createTodo = createTodo;
 
-
-// console.log(testTodo);
-console.log(todos);
+// console.log(todos);
 
 const tags = [];
 window.todos = todos; 
 window.tags = tags;
-// if (!localStorage.getItem("storedTodos") || !localStorage.getItem("storedTags")) {populateStorage();}
-// else {getTodos(); getTags();}
+console.log("Just before populateStorage - todos:", todos);
+console.log("Just before populateStorage - display children:", document.getElementById("display").children.length);
+if (!localStorage.getItem("storedTodos") || !localStorage.getItem("storedTags")) {populateStorage();}
+else {getTodos(); getTags();}
 
 class createTag{ 
   constructor(title) {
@@ -83,27 +85,12 @@ deleteTag: function(title) {
     let index = tags.indexOf(thisItem)
     tags.splice(index, 1);
     // document.getElementById("display").innerHTML = "";
-    console.log("🔥 About to call categorySidebar");
   pageMain.categorySidebar();
-  console.log("🔥 categorySidebar done");
-  
-  console.log("🔥 About to call mainDisplay");
   pageMain.mainDisplay();
-  console.log("🔥 mainDisplay done");
-  
-  console.log("🔥 deleteTag function complete");
-    setTimeout(() => {
-  console.log("Display after 1 second:", document.getElementById("display").innerHTML);
-}, 1000);
+    
 },
-//   priorityDropdown: document.querySelectorAll(".priority").forEach(el => {
-//   el.addEventListener("click", () => {
-//     document.getElementById("priorityDropdown").classList.toggle("show");
-//   });
-// }),
+
   mainDisplay: function() {
-  console.log("mainDisplay called, todos:", todos);
-  console.log("Available tags:", tags.map(tag => tag.title));
   
   document.getElementById("display").innerHTML = "";
   
@@ -216,8 +203,6 @@ const userInteract = {
     document.getElementById("taskDateDue").addEventListener("change", function() {
       var input = this.value;
       var dateEntered = new Date(input);
-      console.log(input); //e.g. 2015-11-13
-      console.log(dateEntered); //e.g. Fri Nov 13 2015 00:00:00 GMT+0000 (GMT Standard Time)
       return dateEntered
     });
     document.getElementById("taskTitle").focus();
@@ -238,7 +223,10 @@ const userInteract = {
     pageMain.mainDisplay();
     document.getElementById("addTask-form").reset();
     document.getElementById("addTaskDisplay").style.display = "none";
-    // populateStorage();
+    
+    console.log("Just before populateStorage - todos:", todos);
+    console.log("Just before populateStorage - display children:", document.getElementById("display").children.length);
+    populateStorage();
   },
   addCategory: function(tag) {
     if (!tags.some(t => t.title === tag)) {
@@ -246,7 +234,7 @@ const userInteract = {
     };
     // document.getElementById("insertTags").innerHTML="";
     pageMain.categorySidebar();
-    // populateStorage();
+    populateStorage();
   },
   addTaskShortcut: document.addEventListener("keydown", function(e) {
   if (e.key === "t") {
@@ -260,7 +248,7 @@ const userInteract = {
 addCategoryPrompt: function() {
     const tag = prompt("What is the category name");
     if (tag && tag.trim()) {
-      this.addCategory(tag.trim());
+      userInteract.addCategory(tag.trim());
     }
   },
 addCategoryShortcut: document.addEventListener("keydown", function(e) {
@@ -305,22 +293,23 @@ const pageElements = {
   },
 };
 
-new createTodo("Eat lunch", "Eat some lunch", "2025-07-17", "medium", "Home");
-new createTodo("Get local storage working", "Why is this so hard", "2025-07-23", "high", "Work");
-new createTodo("Code", "Time to learn", "2025-07-17", "high", "Play");
+// new createTodo("Eat lunch", "Eat some lunch", "2025-07-17", "medium", "Home");
+// new createTodo("Get local storage working", "Why is this so hard", "2025-07-23", "high", "Work");
+// new createTodo("Code", "Time to learn", "2025-07-17", "high", "Play");
 
 pageMain.init();
 userInteract.init();
 pageElements.init();
 pageMain.mainDisplay();
-// window.todos.onchange = populateStorage;
-// window.tags.onchange = populateStorage;
+// todos.onchange = populateStorage;
+// tags.onchange = populateStorage;
 
-// window.onbeforeunload = closingCode;
-// function closingCode(){
-//    populateStorage();
-//    return null;
-// }
+
+function closingCode(){
+   populateStorage();
+   return null;
+}
+window.onbeforeunload = closingCode;
 
 
 

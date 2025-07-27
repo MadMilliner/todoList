@@ -234,6 +234,17 @@ img {
   border: 3px solid var(--color-alt1);
 }
 
+.validateTips {
+  margin-left: .5rem;
+}
+
+#taskPriority, #taskCategory {
+  width: fit-content;
+  padding: 2px 10px 2px 2px;
+  border-radius: 0px !important;
+  background-color: whitesmoke;
+}
+
 #priorityDiv, #priorityDropdown{
   display: none;
 }
