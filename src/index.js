@@ -65,6 +65,7 @@ window.onload = function() {
     storeTags();}
     else {getTags();}
   pageMain.mainDisplay();
+  pageMain.categorySidebar();
 };
 
 class createTag{ 
