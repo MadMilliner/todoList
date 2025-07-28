@@ -1,8 +1,19 @@
 import "./style.css";
 import {storageAvailable, storeTodos, storeTags, getTodos, getTags, storeStyles, getStyles} from "./localStorage.js"
 
+window.onload = function() {
+  if (!localStorage.getItem("storedTodos")) {storeTodos();}
+  else {getTodos();}
 
-if (!localStorage.getItem("style")) {
+  if (!localStorage.getItem("storedTags")) {
+    new createTag("Home");
+    new createTag("Work");
+    new createTag("Play");
+    storeTags();}
+    else {getTags();}
+  pageMain.mainDisplay();
+  pageMain.categorySidebar();
+  if (!localStorage.getItem("style")) {
   document.documentElement.className = "dark";
 } else {
   getStyles();
@@ -13,6 +24,8 @@ if (storageAvailable("localStorage")) {
 } else {
   document.getElementById("footer").innerHTML+=`<p><h6>Local Storage Not Avaialable</h6></p>`
 }
+};
+
 
 function setTheme() {
   const root = document.documentElement;
@@ -51,22 +64,10 @@ window.createTodo = createTodo;
 const tags = new Set();
 window.todos = todos; 
 window.tags = tags;
-console.log("Just before get Todos and Tags - todos:", todos);
-console.log("Just before get Todos and Tags - #display children:", document.getElementById("display").children.length);
-console.log("Just before get Todos and Tags - tags:", tags)
-window.onload = function() {
-  if (!localStorage.getItem("storedTodos")) {storeTodos();}
-  else {getTodos();}
+// console.log("Just before get Todos and Tags - todos:", todos);
+// console.log("Just before get Todos and Tags - #display children:", document.getElementById("display").children.length);
+// console.log("Just before get Todos and Tags - tags:", tags)
 
-  if (!localStorage.getItem("storedTags")) {
-    new createTag("Home");
-    new createTag("Work");
-    new createTag("Play");
-    storeTags();}
-    else {getTags();}
-  pageMain.mainDisplay();
-  pageMain.categorySidebar();
-};
 
 class createTag{ 
   constructor(title) {
@@ -299,7 +300,7 @@ addCategoryShortcut: document.addEventListener("keydown", function(e) {
     }
   }
 }),
-  
+// Add ESC to close newTaskPopUp if I see this  
 
   init: function() {
     document.getElementById("addThatTask").addEventListener("click", userInteract.addTask);
