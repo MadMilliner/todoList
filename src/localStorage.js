@@ -19,7 +19,7 @@ function storageAvailable(type) {
 
 
 
-function populateStorage() {
+function storeTodos() {
   if (todos.length > 0) {
     localStorage.setItem("storedTodos", JSON.stringify(todos));
   } else {
@@ -27,14 +27,17 @@ function populateStorage() {
   }
   console.log("Stored todos:", localStorage.getItem("storedTodos"));
 
-  if (tags.length > 0) {
-    localStorage.setItem("storedTags", JSON.stringify(tags));
+}
+
+function storeTags() {
+  if (tags.size > 0) {
+    const tagsArray = Array.from(tags); // ✅ Convert Set to Array for JSON
+    localStorage.setItem("storedTags", JSON.stringify(tagsArray));
   } else {
     localStorage.setItem("storedTags", JSON.stringify([])); // Save empty array, not undefined
   }
   console.log("Stored tags:", localStorage.getItem("storedTags"))
-  localStorage.setItem("style", document.documentElement.className);
-
+  
 }
 
 // function populateStorage() {
@@ -95,15 +98,23 @@ function getTodos() {
 function getTags() {
   try {
     const stored = localStorage.getItem("storedTags");
-    tags = stored ? JSON.parse(stored) : [];
+    const loadedTags = stored ? JSON.parse(stored) : [];
+    
+    tags.clear();
+    // tags.add(...loadedTags);
+    loadedTags.forEach(tag => tags.add(tag));
+    
   } catch (error) {
     console.error("Error loading tags:", error);
-    tags = []; // Fallback to empty array
+    tags.clear();
   }
-  console.log("Loaded tags:", tags);
 }
 
-function setStyles() {
+function storeStyles() {
+    localStorage.setItem("style", document.documentElement.className);
+}
+
+function getStyles() {
     if (localStorage.getItem("style")) {
         const style = localStorage.getItem("style");
         document.documentElement.className = style;
@@ -114,4 +125,4 @@ function setStyles() {
 
 
 
-export {storageAvailable, populateStorage, getTodos, getTags, setStyles}
+export {storageAvailable, storeTodos, storeTags, getTodos, getTags, storeStyles, getStyles}

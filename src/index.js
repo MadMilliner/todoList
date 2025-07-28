@@ -1,12 +1,11 @@
 import "./style.css";
-import {storageAvailable, populateStorage, getTodos, getTags, setStyles} from "./localStorage.js"
+import {storageAvailable, storeTodos, storeTags, getTodos, getTags, storeStyles, getStyles} from "./localStorage.js"
 
 
 if (!localStorage.getItem("style")) {
   document.documentElement.className = "dark";
-  populateStorage();
 } else {
-  setStyles();
+  getStyles();
 }
 
 if (storageAvailable("localStorage")) {
@@ -49,13 +48,21 @@ window.createTodo = createTodo;
 
 // console.log(todos);
 
-const tags = [];
+const tags = new Set();
 window.todos = todos; 
 window.tags = tags;
-console.log("Just before populateStorage - todos:", todos);
-console.log("Just before populateStorage - display children:", document.getElementById("display").children.length);
-if (!localStorage.getItem("storedTodos") || !localStorage.getItem("storedTags")) {populateStorage();}
-else {getTodos(); getTags();}
+console.log("Just before get Todos and Tags - todos:", todos);
+console.log("Just before get Todos and Tags - #display children:", document.getElementById("display").children.length);
+console.log("Just before get Todos and Tags - tags:", tags)
+if (!localStorage.getItem("storedTodos")) {storeTodos();}
+else {getTodos();}
+
+if (!localStorage.getItem("storedTags")) {
+    new createTag("Home");
+    new createTag("Work");
+    new createTag("Play");
+    storeTags();}
+else {getTags();}
 
 class createTag{ 
   constructor(title) {
@@ -63,14 +70,15 @@ class createTag{
   this.addTags();
   }
   addTags() {
-    tags.push(this);
-    tags.sort((a, b) => a.title - b.title)}
+    tags.add(this);
 };
+}
 
 
-new createTag("Home");
-new createTag("Work");
-new createTag("Play");
+  // new createTag("Home");
+  // new createTag("Work");
+  // new createTag("Play");
+
 
 const pageMain = {
   deleteTodo: function(id) {
@@ -81,9 +89,11 @@ const pageMain = {
     pageMain.mainDisplay();
 },
 deleteTag: function(title) {
-    const thisItem = tags.find((thisItem) => thisItem.title === String(title));
-    let index = tags.indexOf(thisItem)
-    tags.splice(index, 1);
+  const thisItem = Array.from(tags).find((thisItem) => thisItem.title === String(title));
+  
+  if (thisItem) {
+    tags.delete(thisItem); 
+  }
     // document.getElementById("display").innerHTML = "";
   pageMain.categorySidebar();
   pageMain.mainDisplay();
@@ -155,23 +165,40 @@ categoryFilter: function(e) {
 categorySidebar: function() {
   const tagSpace = document.getElementById("insertTags");
   tagSpace.innerHTML="";
-  tags.forEach((tag) => {
-    if (tag.title === "") {}
-    else {
-    const categoryButton = document.createElement("button");
-    categoryButton.setAttribute("id", `${tag.title}`);
-    categoryButton.setAttribute("class", "category");
-    categoryButton.setAttribute("type", "button");
-    categoryButton.innerHTML = `${tag.title} <button class="delete-btn" id="delete-btn-${tag.title}"></button>`;
-    categoryButton.addEventListener("click", pageMain.categoryFilter);
-    tagSpace.appendChild(categoryButton);
-    document.getElementById(`delete-btn-${tag.title}`).addEventListener("click", (e) => {
-      e.stopPropagation(); // ✅ Prevent event bubbling
-      pageMain.deleteTodo(tag.title);
-});
-    }
-  })
-},
+  Array.from(tags)
+    .sort((a, b) => a.title.localeCompare(b.title))
+    .forEach((tag) => {
+      if (tag.title !== "") {
+        const categoryButton = document.createElement("button");
+        categoryButton.setAttribute("id", `${tag.title}`);
+        categoryButton.setAttribute("class", "category");
+        categoryButton.setAttribute("type", "button");
+        categoryButton.innerHTML = `${tag.title} <button class="delete-btn" id="delete-btn-${tag.title}"></button>`;
+        categoryButton.addEventListener("click", pageMain.categoryFilter);
+        tagSpace.appendChild(categoryButton);
+        document.getElementById(`delete-btn-${tag.title}`).addEventListener("click", (e) => {
+          e.stopPropagation();
+          pageMain.deleteTag(tag.title);
+      })
+    }});
+  },
+//   tags.forEach((tag) => {
+//     if (tag.title === "") {}
+//     else {
+//     const categoryButton = document.createElement("button");
+//     categoryButton.setAttribute("id", `${tag.title}`);
+//     categoryButton.setAttribute("class", "category");
+//     categoryButton.setAttribute("type", "button");
+//     categoryButton.innerHTML = `${tag.title} <button class="delete-btn" id="delete-btn-${tag.title}"></button>`;
+//     categoryButton.addEventListener("click", pageMain.categoryFilter);
+//     tagSpace.appendChild(categoryButton);
+//     document.getElementById(`delete-btn-${tag.title}`).addEventListener("click", (e) => {
+//       e.stopPropagation(); // ✅ Prevent event bubbling
+//       pageMain.deleteTodo(tag.title);
+// });
+//     }
+//   })
+
 
 
   init: function() {
@@ -191,6 +218,16 @@ const userInteract = {
     
     const tagSpace = document.getElementById("taskCategory");
     tagSpace.innerHTML="";
+    Array.from(tags)
+      .sort((a, b) => a.title.localeCompare(b.title))
+      .forEach((tag) => {
+        if (tag.title !== "") {
+          const categoryButton = document.createElement("option");
+          categoryButton.setAttribute("value", `${tag.title}`);
+          categoryButton.innerHTML = `${tag.title}`;
+          tagSpace.appendChild(categoryButton);
+    }
+  });
     tags.forEach((tag) => {
       if (tag.title === "") {}
       else {
@@ -224,18 +261,16 @@ const userInteract = {
     document.getElementById("addTask-form").reset();
     document.getElementById("addTaskDisplay").style.display = "none";
     
-    console.log("Just before populateStorage - todos:", todos);
-    console.log("Just before populateStorage - display children:", document.getElementById("display").children.length);
-    populateStorage();
+    // storeTodos();
   },
   addCategory: function(tag) {
-    if (!tags.some(t => t.title === tag)) {
-      new createTag(tag);
-    };
-    // document.getElementById("insertTags").innerHTML="";
-    pageMain.categorySidebar();
-    populateStorage();
-  },
+  const tagExists = Array.from(tags).some(t => t.title === tag);
+  
+  if (!tagExists) {
+    new createTag(tag);
+  }
+  pageMain.categorySidebar();
+},
   addTaskShortcut: document.addEventListener("keydown", function(e) {
   if (e.key === "t") {
     const popup = document.getElementById("addTaskDisplay");
@@ -301,12 +336,14 @@ pageMain.init();
 userInteract.init();
 pageElements.init();
 pageMain.mainDisplay();
-// todos.onchange = populateStorage;
-// tags.onchange = populateStorage;
+// todos.onchange = storeTodos();
+// tags.onchange = storeTags();
 
 
 function closingCode(){
-   populateStorage();
+   storeTags();
+   storeTodos();
+   storeStyles();
    return null;
 }
 window.onbeforeunload = closingCode;
