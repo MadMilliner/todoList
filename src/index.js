@@ -54,15 +54,18 @@ window.tags = tags;
 console.log("Just before get Todos and Tags - todos:", todos);
 console.log("Just before get Todos and Tags - #display children:", document.getElementById("display").children.length);
 console.log("Just before get Todos and Tags - tags:", tags)
-if (!localStorage.getItem("storedTodos")) {storeTodos();}
-else {getTodos();}
+window.onload = function() {
+  if (!localStorage.getItem("storedTodos")) {storeTodos();}
+  else {getTodos();}
 
-if (!localStorage.getItem("storedTags")) {
+  if (!localStorage.getItem("storedTags")) {
     new createTag("Home");
     new createTag("Work");
     new createTag("Play");
     storeTags();}
-else {getTags();}
+    else {getTags();}
+  pageMain.mainDisplay();
+};
 
 class createTag{ 
   constructor(title) {
@@ -335,7 +338,7 @@ const pageElements = {
 pageMain.init();
 userInteract.init();
 pageElements.init();
-pageMain.mainDisplay();
+
 // todos.onchange = storeTodos();
 // tags.onchange = storeTags();
 
