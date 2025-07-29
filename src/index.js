@@ -1,5 +1,6 @@
 import "./style.css";
 import {storageAvailable, storeTodos, storeTags, getTodos, getTags, storeStyles, getStyles} from "./localStorage.js"
+import {tdCard} from "./html.js"
 
 window.onload = function() {
   if (!localStorage.getItem("storedTodos")) {storeTodos();}
@@ -53,20 +54,18 @@ class createTodo {
   }
   addTodos() {
     todos.push(this);
-    todos.sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+    todos.sort((a, b) => {
+    if (!a.dueDate || !b.dueDate) return 0;
+    return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+});
   }
 }
 
 window.createTodo = createTodo;
 
-// console.log(todos);
-
 const tags = new Set();
 window.todos = todos; 
 window.tags = tags;
-// console.log("Just before get Todos and Tags - todos:", todos);
-// console.log("Just before get Todos and Tags - #display children:", document.getElementById("display").children.length);
-// console.log("Just before get Todos and Tags - tags:", tags)
 
 
 class createTag{ 
@@ -77,12 +76,7 @@ class createTag{
   addTags() {
     tags.add(this);
 };
-}
-
-
-  // new createTag("Home");
-  // new createTag("Work");
-  // new createTag("Play");
+} 
 
 
 const pageMain = {
@@ -92,8 +86,8 @@ const pageMain = {
     todos.splice(index, 1);
     document.getElementById("display").innerHTML = "";
     pageMain.mainDisplay();
-},
-deleteTag: function(title) {
+  },
+  deleteTag: function(title) {
   const thisItem = Array.from(tags).find((thisItem) => thisItem.title === String(title));
   
   if (thisItem) {
@@ -103,8 +97,7 @@ deleteTag: function(title) {
   pageMain.categorySidebar();
   pageMain.mainDisplay();
     
-},
-
+  },
   mainDisplay: function() {
   
   document.getElementById("display").innerHTML = "";
@@ -113,32 +106,26 @@ deleteTag: function(title) {
     const display = document.getElementById("display");
     const todoCard = document.createElement("div");
     todoCard.setAttribute("id", `${todo.id}`);
-    todoCard.innerHTML = `
-      <p><span class="todoTitle">${todo.title}</span></p>
-      <p>${todo.description}</p>
-      <p>Due: ${todo.dueDateFormatted}</p>
-      <p class="priority">Priority: ${todo.priority}</p>
-      <p>Category: ${todo.category || 'Uncategorized'}</p>
-      <p>
-        <input type="checkbox" class="complete" id="check-${todo.id}" ${todo.complete ? 'checked' : ''}>
-        <button type="button" class="delete-btn" id="delete-btn-${todo.id}"></button>
-      </p>`;
-    
+    todoCard.innerHTML = tdCard(todo);    
     display.appendChild(todoCard);
     
     document.getElementById(`delete-btn-${todo.id}`).addEventListener("click", () => {
       pageMain.deleteTodo(todo.id);
     });
-    
+    if (`${todo.dueDate}` === new Date()) {
+      document.getElementById(`date-${todo.id}`).style.classList += "today"
+    };
+
     const checkbox = document.getElementById(`check-${todo.id}`);
     checkbox.addEventListener("change", () => {
       todo.complete = checkbox.checked;
       console.log(`"${todo.title}" is now ${todo.complete ? 'complete' : 'incomplete'}`);
       todoCard.classList.toggle("task-completed", todo.complete);
     });
+    
   });
-},
-categoryFilter: function(e) {
+  },
+  categoryFilter: function(e) {
   document.getElementById("display").innerHTML = "";
   todos.filter(obj => {
         return obj.category === e.target.id 
@@ -146,17 +133,7 @@ categoryFilter: function(e) {
       const display = document.getElementById("display");
       const todoCard = document.createElement("div");
       todoCard.setAttribute("id", `${todo.id}`);
-      todoCard.innerHTML = `
-        <p><span class="todoTitle">${todo.title}</span></p>
-        <p>${todo.description}</p>
-        <p>Due: ${todo.dueDateFormatted}</p>
-        <p class="priority">Priority: ${todo.priority}</p>
-        <p>Category: ${todo.category}</p>
-        <p>
-          <input type="checkbox" class="complete" id="check-${todo.id}" ${todo.complete ? 'checked' : ''}>
-          <button type="button" class="delete-btn" id="delete-btn-${todo.id}"></button>
-        </p>
-      `;
+      todoCard.innerHTML = tdCard(todo);
       display.appendChild(todoCard);
       document.getElementById(`delete-btn-${todo.id}`).addEventListener("click", () => {pageMain.deleteTodo(todo.id)});
       const checkbox = document.getElementById(`check-${todo.id}`);
@@ -166,8 +143,8 @@ categoryFilter: function(e) {
         todoCard.classList.toggle("task-completed", todo.complete);
   });
 });
-},
-categorySidebar: function() {
+  },
+  categorySidebar: function() {
   const tagSpace = document.getElementById("insertTags");
   tagSpace.innerHTML="";
   Array.from(tags)
@@ -187,24 +164,6 @@ categorySidebar: function() {
       })
     }});
   },
-//   tags.forEach((tag) => {
-//     if (tag.title === "") {}
-//     else {
-//     const categoryButton = document.createElement("button");
-//     categoryButton.setAttribute("id", `${tag.title}`);
-//     categoryButton.setAttribute("class", "category");
-//     categoryButton.setAttribute("type", "button");
-//     categoryButton.innerHTML = `${tag.title} <button class="delete-btn" id="delete-btn-${tag.title}"></button>`;
-//     categoryButton.addEventListener("click", pageMain.categoryFilter);
-//     tagSpace.appendChild(categoryButton);
-//     document.getElementById(`delete-btn-${tag.title}`).addEventListener("click", (e) => {
-//       e.stopPropagation(); // ✅ Prevent event bubbling
-//       pageMain.deleteTodo(tag.title);
-// });
-//     }
-//   })
-
-
 
   init: function() {
     this.deleteTodo;
@@ -233,15 +192,6 @@ const userInteract = {
           tagSpace.appendChild(categoryButton);
     }
   });
-    tags.forEach((tag) => {
-      if (tag.title === "") {}
-      else {
-      const categoryButton = document.createElement("option");
-      categoryButton.setAttribute("value", `${tag.title}`);
-      categoryButton.innerHTML = `${tag.title}`;
-      tagSpace.appendChild(categoryButton);
-    }
-  })
     document.getElementById("taskDateDue").addEventListener("change", function() {
       var input = this.value;
       var dateEntered = new Date(input);
@@ -265,8 +215,6 @@ const userInteract = {
     pageMain.mainDisplay();
     document.getElementById("addTask-form").reset();
     document.getElementById("addTaskDisplay").style.display = "none";
-    
-    // storeTodos();
   },
   addCategory: function(tag) {
   const tagExists = Array.from(tags).some(t => t.title === tag);
@@ -275,7 +223,7 @@ const userInteract = {
     new createTag(tag);
   }
   pageMain.categorySidebar();
-},
+  },
   addTaskShortcut: document.addEventListener("keydown", function(e) {
   if (e.key === "t") {
     const popup = document.getElementById("addTaskDisplay");
@@ -284,14 +232,14 @@ const userInteract = {
       userInteract.addTaskPopUp(); 
     }
   }
-}),
-addCategoryPrompt: function() {
+  }),
+  addCategoryPrompt: function() {
     const tag = prompt("What is the category name");
     if (tag && tag.trim()) {
       userInteract.addCategory(tag.trim());
     }
   },
-addCategoryShortcut: document.addEventListener("keydown", function(e) {
+  addCategoryShortcut: document.addEventListener("keydown", function(e) {
   if (e.key === "c") {
     const popup = document.getElementById("addTaskDisplay");
     if (popup.style.display === "none" || popup.style.display === "") {
@@ -299,8 +247,24 @@ addCategoryShortcut: document.addEventListener("keydown", function(e) {
       userInteract.addCategoryPrompt(); 
     }
   }
-}),
-// Add ESC to close newTaskPopUp if I see this  
+  }),
+  closeTaskPopUpShortcut: document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape" && document.getElementById("addTaskDisplay").style.display === "block") {
+    e.preventDefault();
+    const popup = document.getElementById("addTaskDisplay");
+    popup.style.display = "none";
+    console.log("Esc key pressed");    
+  }
+  }),
+  allTasksShortcut: document.addEventListener("keydown", function(e) {
+  if (e.key === "a") {
+    const popup = document.getElementById("addTaskDisplay");
+    if (popup.style.display === "none" || popup.style.display === "") {
+      e.preventDefault();
+      pageMain.mainDisplay(); 
+    }
+  }
+  }),
 
   init: function() {
     document.getElementById("addThatTask").addEventListener("click", userInteract.addTask);
@@ -312,6 +276,7 @@ addCategoryShortcut: document.addEventListener("keydown", function(e) {
     this.addCategory;
     this.addTaskShortcut;
     this.addCategoryShortcut;
+    this.closeTaskPopUpShortcut;
   },
 };
 
@@ -320,16 +285,11 @@ const pageElements = {
   addCategoryButton: document.getElementById("addCategory").addEventListener("click", userInteract.addCategoryPrompt),
   eventListenerAddTask: document.getElementById("addTodo").addEventListener("click", userInteract.addTaskPopUp),
   allTasksButton: document.getElementById("allTasks").addEventListener("click", pageMain.mainDisplay),
-  // categoryEventlisteners: function() {
-  //   const categories = document.querySelectorAll(".category");
-  //   categories.addEventListener("click", pageMain.categoryFilter)
-  // },
   init: function() {
     this.addCategoryButton;
     this.addTaskPopUp;
     this.eventListenerAddTask;
     this.allTasksButton;
-    // this.categoryEventlisteners();
   },
 };
 
@@ -340,9 +300,6 @@ const pageElements = {
 pageMain.init();
 userInteract.init();
 pageElements.init();
-
-// todos.onchange = storeTodos();
-// tags.onchange = storeTags();
 
 
 function closingCode(){

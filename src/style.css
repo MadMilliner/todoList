@@ -196,6 +196,10 @@ img {
   right: -10%;
 }
 
+.today {
+  color: #07ca00;
+}
+
 .task-completed {
   opacity: 0.6;
   text-decoration: line-through;
