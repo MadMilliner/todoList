@@ -1,9 +1,10 @@
 import "./style.css";
 import {storageAvailable, storeTodos, storeTags, getTodos, getTags, storeStyles, getStyles} from "./localStorage.js"
 import {tdCard} from "./html.js"
+import { isToday } from "date-fns";
 
 window.onload = function() {
-  if (!localStorage.getItem("storedTodos")) {storeTodos();}
+  if (!localStorage.getItem("storedTodos")) {new createTodo("Add a task", "Delete this one first", isToday, "high", "Home");}
   else {getTodos();}
 
   if (!localStorage.getItem("storedTags")) {
@@ -293,9 +294,6 @@ const pageElements = {
   },
 };
 
-// new createTodo("Eat lunch", "Eat some lunch", "2025-07-17", "medium", "Home");
-// new createTodo("Get local storage working", "Why is this so hard", "2025-07-23", "high", "Work");
-// new createTodo("Code", "Time to learn", "2025-07-17", "high", "Play");
 
 pageMain.init();
 userInteract.init();

@@ -40,45 +40,6 @@ function storeTags() {
   
 }
 
-// function populateStorage() {
-//   console.log("Inside populateStorage:");
-//   console.log("todos === window.todos?", todos === window.todos);
-//   console.log("todos:", todos);
-//   console.log("window.todos:", window.todos);
-
-//   console.log("todos:", todos);
-//   console.log("todos.length:", todos ? todos.length : "todos is undefined");
-//   console.log("todos exists?", !!todos);
-//   console.log("todos.length > 0?", todos && todos.length > 0);
-  
-//   if (todos && todos.length > 0) {
-//     console.log("✅ Taking the IF path - storing todos");
-//     console.log("About to stringify:", todos);
-//     const stringified = JSON.stringify(todos);
-//     console.log("Stringified result:", stringified);
-//     localStorage.setItem("storedTodos", stringified);
-//   } else {
-//     console.log("❌ Taking the ELSE path - storing empty array");
-//     console.log("Why? todos is:", todos);
-//     console.log("todos.length is:", todos ? todos.length : "N/A");
-//     localStorage.setItem("storedTodos", JSON.stringify([]));
-//   }
-  
-//   console.log("Final stored value:", localStorage.getItem("storedTodos"));
-// }
-
-
-// function getTodos() {
-//   try {
-//     const stored = localStorage.getItem("storedTodos");
-//     todos = stored ? JSON.parse(stored) : [];
-//   } catch (error) {
-//     console.error("Error loading todos:", error);
-//     todos = []; // Fallback to empty array
-//   }
-//   console.log("Loaded todos:", todos);
-// }
-
 function getTodos() {
   try {
     const stored = localStorage.getItem("storedTodos");
